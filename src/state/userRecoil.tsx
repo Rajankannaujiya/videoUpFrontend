@@ -16,3 +16,8 @@ export const signinUser = atom({
         password:''
     }
 })
+
+export const uploadVideoToBackend = atom({
+    key:'VideoToBackend',
+    default:""
+})

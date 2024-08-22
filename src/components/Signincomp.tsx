@@ -1,9 +1,9 @@
-import { useRecoilState } from "recoil"
+import { useRecoilState, useSetRecoilState } from "recoil"
 import Button from "./common/Button"
 import Header from "./common/Header"
 import Input from "./common/Input"
 import Label from "./common/Label"
-import { signupUser } from "../state/userRecoil"
+import { isSignin, signupUser } from "../state/userRecoil"
 import axios from "axios"
 import { BACKEND_URL } from "../config"
 import { useNavigate } from "react-router-dom"
@@ -15,6 +15,7 @@ function Signincomp() {
 
   const navigate =useNavigate()
   const[user,setUser] = useRecoilState(signupUser)
+  const setSignInStatus = useSetRecoilState(isSignin);
 
  async function handleSignInInput(){
   try {
@@ -27,7 +28,7 @@ function Signincomp() {
 
     // Store the token in localStorage
     localStorage.setItem("token", response.data.token);
-
+    setSignInStatus(true)
     // Navigate to the "/posts" route
     navigate("/posts");
   } catch (error) {

@@ -1,15 +1,11 @@
-import { ChangeEvent, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Button from "./common/Button";
 import Input from "./common/Input";
 import Label from "./common/Label";
-import { useRecoilState } from "recoil";
-import { uploadVideoToBackend } from "../state/userRecoil";
+import TextArea from "./common/TextArea";
+import { BACKEND_URL } from "../config";
 
-function Fullvideo() {
-
-  const [uploadVideo,setUploadVideo] = useRecoilState(uploadVideoToBackend)
-
-  console.log(uploadVideo,setUploadVideo)
+function UploadComp() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -45,37 +41,46 @@ function Fullvideo() {
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event:React.FormEvent) => {
     event.preventDefault();
 
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
+    if(!selectedFile){
+      return;
+    }
 
 
-      try {
-        const response = await fetch('/upload', {
-          method: 'POST',
-          body: formData,
+    const formData = new FormData();
+    formData.append('videoPath', selectedFile);
+    formData.append('title', title);
+    formData.append('description', description);
+
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/v1/video/publishvideo`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `${localStorage.getItem("token")}` , // Example of an Authorization header
+                // Do not set 'Content-Type' for FormData, it will be set automatically
+            },
+            body: formData,
         });
 
         if (response.ok) {
-          console.log('File uploaded successfully');
+            console.log('File uploaded successfully');
         } else {
-          console.error('Upload failed');
+            console.error('Upload failed');
         }
-      } catch (error) {
+    } catch (error) {
         console.error('Error uploading file:', error);
-      }
     }
-  };
+};
+
 
 
 
   return (
     <div className="flex justify-between items-center flex-col max-w-md w-full">
-  <div className="flex justify-center flex-col w-full">
-  <div>
+  <div className="flex justify-center flex-col w-full m-4">
+  <div className="mt-10">
         <Label htmlFor="title" label="Title" />
         <Input
           placeholder="enter the Title of the video"
@@ -157,24 +162,4 @@ function Fullvideo() {
   );
 }
 
-export default Fullvideo;
-
-
-interface TextAreaProps{
-  onChange:(event: ChangeEvent<HTMLTextAreaElement>) => void;
-  value:string
-}
-
-export function TextArea({onChange,value}:TextAreaProps) {
-  return (
-    <div>
-      <textarea
-      value={value}
-      onChange={onChange}
-        rows={4}
-        className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-        placeholder="write the description here..."
-      ></textarea>
-    </div>
-  );
-}
+export default UploadComp;

@@ -1,14 +1,12 @@
-import Fullvideo from "../components/Fullvideo"
+import UploadComp from "../components/UploadComp"
 
 
 
 function Upload() {
   return (
-    <div>
-      <div className="flex justify-center ">
-      <Fullvideo/> 
+      <div className="flex justify-center mt-7">
+      <UploadComp/> 
       </div>
-    </div>
   )
 }
 

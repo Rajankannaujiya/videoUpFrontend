@@ -1,10 +1,10 @@
 
-import { useRecoilState } from "recoil"
+import { useRecoilState, useSetRecoilState } from "recoil"
 import Button from "./common/Button"
 import Header from "./common/Header"
 import Input from "./common/Input"
 import Label from "./common/Label"
-import { signupUser } from "../state/userRecoil"
+import { isSignin, signupUser } from "../state/userRecoil"
 import axios from "axios"
 import { BACKEND_URL } from '../config'
 import Alert from "./common/Alert";
@@ -21,6 +21,8 @@ function SignupComp() {
 
   const [user, setUser] = useRecoilState(signupUser);
 
+  const setSignInStatus = useSetRecoilState(isSignin);
+
 
   
 
@@ -34,7 +36,7 @@ function SignupComp() {
 
       console.log("data is",response.data);
       localStorage.setItem("token",response.data.token)
-
+      setSignInStatus(true)
       navigate("/posts")
       
     } catch (error) {

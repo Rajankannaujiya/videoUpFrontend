@@ -4,11 +4,12 @@ import Input from "./common/Input";
 import Label from "./common/Label";
 import TextArea from "./common/TextArea";
 import { BACKEND_URL } from "../config";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Alert from "./common/Alert";
 import { useSetRecoilState } from "recoil";
 import { isRefresh } from "../state/userRecoil";
 
-function UploadComp() {
+function UpdateComp() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const[photo, setPhoto] = useState<string | null>(null)
@@ -18,10 +19,10 @@ function UploadComp() {
   const [isClicked, setISClicked] = useState<boolean>(false)
 
 
-  const setRefreshPage = useSetRecoilState(isRefresh)
-
-
+const {id }= useParams();
   const navigate =useNavigate();
+
+  const setRefreshPage = useSetRecoilState(isRefresh)
 
   const handleReplaceVideo = async() => {
     setSelectedFile(null);
@@ -68,6 +69,7 @@ function UploadComp() {
     event.preventDefault();
 
     setISClicked(true)
+   
     if(!selectedFile){
       return;
     }
@@ -83,10 +85,9 @@ function UploadComp() {
    }
     formData.append('title', title);
     formData.append('description', description);
-
     try {
-        const response = await fetch(`${BACKEND_URL}/api/v1/${videoPreview? "video" : "image"}/${videoPreview ? "publishvideo":"publishimage"}`, {
-            method: 'POST',
+        const response = await fetch(`${BACKEND_URL}/api/v1/${videoPreview? "video" : "image"}/update/${id}`, {
+            method: 'PUT',
             headers: {
                 'Authorization': `${localStorage.getItem("token")}` , // Example of an Authorization header
                 // Do not set 'Content-Type' for FormData, it will be set automatically
@@ -96,8 +97,9 @@ function UploadComp() {
 
         if (response.ok) {
             console.log('File uploaded successfully');
+            <Alert textColor={"green"} alertType={"success"} alertContent={"post updated successfully"} />
             setRefreshPage(!isRefresh)
-            navigate("/posts")
+            navigate("/myPosts")
         } else {
             console.error('Upload failed');
         }
@@ -201,11 +203,11 @@ function UploadComp() {
 
   </div>
       <div className="mt-6 p-2 ">
-        <Button type="button" buttonFor="Upload" onClick={handleSubmit} isClicked={isClicked} colour="green"/>
+        <Button type="button" buttonFor="Update" onClick={handleSubmit} isClicked={isClicked} colour="green"/>
       </div>
   </div>
       
   );
 }
 
-export default UploadComp;
+export default UpdateComp;

@@ -2,6 +2,7 @@ import { useState } from "react"
 import Links from "./common/Links"
 import { useRecoilValue } from "recoil";
 import { isSignin } from "../state/userRecoil";
+import Logout from "./Logout";
 
 
 function Navbar() {
@@ -45,6 +46,7 @@ function Navbar() {
 
           {!isLoggedIn && 
           <li>
+          
           <Links linkto="/login" linkfor="Login"/>
           </li>
           }
@@ -71,16 +73,11 @@ function Navbar() {
             <div id="dropdownNavbar" className={`z-10 ${isClicked ?"":"hidden"} font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 absolute right-0`}>
                 <ul className="text-sm text-gray-700 font-light hover:bg-gray-100" aria-labelledby="dropdownLargeButton">
                  <li className="mt-2 p-1 border-b-2 font-semibold">
-                  <Links linkto="/myvideos" linkfor="MyVideos"/>
+                  <Links linkto="/myPosts" linkfor="myposts"/>
                  </li>
-
-                 <li className="mt-2 p-1 border-b-2 font-semibold">
-                  <Links linkto="/myphotos" linkfor="MyPhotos"/>
-                 </li>
-
                 </ul>
-                <div className="p-1">
-                  <Links linkto="/" linkfor="Logout"/>
+                <div>
+                  <Logout />
                 </div>
             </div>
 }

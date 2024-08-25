@@ -8,6 +8,7 @@ import axios from "axios"
 import { BACKEND_URL } from "../config"
 import { useNavigate } from "react-router-dom"
 import Alert from "./common/Alert"
+import { useState } from "react"
 
 
 
@@ -16,8 +17,10 @@ function Signincomp() {
   const navigate =useNavigate()
   const[user,setUser] = useRecoilState(signupUser)
   const setSignInStatus = useSetRecoilState(isSignin);
+  const [isClicked, setIsClicked] = useState<boolean>(false)
 
  async function handleSignInInput(){
+  setIsClicked(true)
   try {
     const response = await axios.post(`${BACKEND_URL}/api/v1/user/signin`, user,{
       headers:{
@@ -34,6 +37,11 @@ function Signincomp() {
   } catch (error) {
     <Alert textColor="text-red-800" alertType="Danger Alert!" alertContent="error while signing up please try again later"/>
   }
+
+  finally{
+    setIsClicked(false)
+  }
+
   }
 
   return (
@@ -64,7 +72,7 @@ function Signincomp() {
         </div>
 
         <div className="flex justify-center m-4 p-2">
-        <Button onClick={handleSignInInput} type="button" buttonFor="Login"/>
+        <Button onClick={handleSignInInput} type="button" buttonFor="Login" colour="gray" isClicked={isClicked}/>
         </div>
     </div>
 

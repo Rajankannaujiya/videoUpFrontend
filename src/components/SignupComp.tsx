@@ -9,6 +9,7 @@ import axios from "axios"
 import { BACKEND_URL } from '../config'
 import Alert from "./common/Alert";
 import { useNavigate } from "react-router-dom"
+import { useState } from "react"
 
 
 
@@ -23,10 +24,16 @@ function SignupComp() {
 
   const setSignInStatus = useSetRecoilState(isSignin);
 
+  // setting isclicked based on the user clicked the signup button to so spinner
+
+  const [isClicked, setIsClicked] = useState<boolean>(false)
+
 
   
 
   async function handleSignUpInput() {
+
+    setIsClicked(true)
     try {
      const response = await axios.post(`${BACKEND_URL}/api/v1/user/signup`, user,{
         headers:{
@@ -42,8 +49,13 @@ function SignupComp() {
     } catch (error) {
       <Alert textColor="text-red-800" alertType="Danger Alert!" alertContent="error while signing up please try again later"/>
     }
+
+    finally {
+      setIsClicked(false)
+    }
     
   }
+
 
 
   
@@ -89,12 +101,12 @@ function SignupComp() {
         </div>
 
         <div className="flex justify-center m-4 p-2">
-        <Button onClick={handleSignUpInput} type="button" buttonFor="Signup"/>
+        <Button onClick={handleSignUpInput} type="button" buttonFor="Signup" colour="gray" isClicked={isClicked}/>
         </div>
     </div>
 
     </div>
-  )
+  ) 
 }
 
 export default SignupComp

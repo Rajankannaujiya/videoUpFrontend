@@ -23,21 +23,21 @@ function Videos() {
 
   const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
 
-  if (refreshPage) {
-    // Refresh the page or re-render the component
-    window.location.reload();
-    // or
-    setRefreshPage(false); // reset the state
-  }
-  
-
+ 
   useEffect(() => {
     
     if (state === "hasValue") {
       setVideoList(contents);
     }
 
-  }, [state, contents]);
+    if (refreshPage) {
+      // Refresh the page or re-render the component
+      window.location.reload();
+      // or
+      setRefreshPage(false); // reset the state
+    }
+
+  }, [state, contents,refreshPage,setRefreshPage]);
 
   return (
     <div className="h-screen flex flex-col items-center p-4 overflow-x-hidden overflow-y-scroll scrollbar-hide mt-12">

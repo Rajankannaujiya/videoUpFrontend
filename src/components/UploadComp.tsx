@@ -76,27 +76,56 @@ function UploadComp() {
     const formData = new FormData();
    if(videoPreview){
     formData.append('videoPath', selectedFile);
+    
    }
 
    if(photo){
     formData.append('imagePath', selectedFile);
    }
+
     formData.append('title', title);
     formData.append('description', description);
+
+ 
+    // const compressData = (formData: FormData): Uint8Array => {
+    //   // Convert FormData to an object
+    //   const formDataObject: { [key: string]: unknown } = {};
+    //   formData.forEach((value, key) => {
+    //     formDataObject[key] = value;
+    //   });
+    
+    //   try {
+    //     // Stringify the object
+    //     const jsonString = JSON.stringify(formDataObject);
+    
+    //     // Compress the stringified data using pako
+    //     const compressedData = pako.deflate(jsonString, { to: 'string' } as pako.DeflateOptions & { to: 'string' });
+    //     console.log("compressed data",compressedData)
+    
+    //     return compressedData;
+    //   } catch (error) {
+    //     console.error('Compression error:', error);
+    //     // If compression fails, return an empty Uint8Array as a fallback
+    //     return new Uint8Array();
+    //   }
+    // };
+
+    
+    // const compressedData = compressData(formData);
+    
 
     try {
         const response = await fetch(`${BACKEND_URL}/api/v1/${videoPreview? "video" : "image"}/${videoPreview ? "publishvideo":"publishimage"}`, {
             method: 'POST',
             headers: {
                 'Authorization': `${localStorage.getItem("token")}` , // Example of an Authorization header
-                // Do not set 'Content-Type' for FormData, it will be set automatically
             },
             body: formData,
         });
 
         if (response.ok) {
             console.log('File uploaded successfully');
-            setRefreshPage(!isRefresh)
+            setRefreshPage(true)
             navigate("/posts")
         } else {
             console.error('Upload failed');

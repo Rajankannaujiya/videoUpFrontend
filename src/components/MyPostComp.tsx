@@ -2,11 +2,13 @@ import { useState } from "react";
 import Alert from "./common/Alert";
 import Button from "./common/Button";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { isRefresh } from "../state/userRecoil";
+import { useSetRecoilState } from "recoil";
+import {  isRefresh } from "../state/userRecoil";
+import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 
-interface MyPostComp {
+interface MyPostCompProps {
   id: string;
   type: string;
   title: string;
@@ -22,30 +24,15 @@ function MyPostComp({
   videoUrl,
   imageUrl,
   description,
-}: MyPostComp) {
+}: MyPostCompProps) {
 
 
   const [isClicked, setIsClicked] = useState<boolean>(false);
 
-  const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
-
-  if (refreshPage) {
-    // Refresh the page or re-render the component
-    window.location.reload();
-    console.log("I got refresh")
-    // or
-    setRefreshPage(false); // reset the state
-  }
-
+  const setRefreshPage= useSetRecoilState(isRefresh);
 
 
   const navigate= useNavigate();
-
-  function handleImageDelete(){
-    setIsClicked(!isClicked)
-  }
-
-
 
   function handleClick(){
     setIsClicked(!isClicked)
@@ -53,20 +40,70 @@ function MyPostComp({
 
 
 
-  function handleVideoDelete() {
-
+ async function handleVideoDelete() {
     try {
+      
       console.log("hii there");
+      console.log("Starting delete...");
+     
+        const response =await axios.delete(`${BACKEND_URL}/api/v1/video/delete/${String(id)}`,{
+            headers:{
+                'Authorization': `${localStorage.getItem("token")}`
+            }
+        })
+
+        setRefreshPage(true);
+        <Alert
+        textColor={"text-green-800"}
+        alertType={"success"}
+        alertContent={`${response.data.message}`}
+      />
+    
     } catch (error) {
       <Alert
-        textColor={"orange"}
+        textColor={"text-orange-800"}
         alertType={"warning"}
         alertContent={"something went wrong please try again later"}
       />;
     } finally {
       setIsClicked(false);
+      setRefreshPage(false)
     }
   }
+
+
+
+
+ async function handleImageDelete() {
+  try {
+    
+    console.log("hii there");
+    console.log("Starting delete...");
+   
+      const response =await axios.delete(`${BACKEND_URL}/api/v1/image/delete/${String(id)}`,{
+          headers:{
+              'Authorization': `${localStorage.getItem("token")}`
+          }
+      })
+
+      setRefreshPage(true);
+      <Alert
+      textColor={"text-green-800"}
+      alertType={"success"}
+      alertContent={`${response.data.message}`}
+    />
+  
+  } catch (error) {
+    <Alert
+      textColor={"text-orange-800"}
+      alertType={"warning"}
+      alertContent={"something went wrong please try again later"}
+    />;
+  } finally {
+    setIsClicked(false);
+  }
+}
+
 
   return (
     <div className="z-10 max-w-screen-sm w-full bg-slate-100 m-4 p-4  rounded-sm border-2 shadow-sm sm:flex-col sm:m-2">
@@ -96,7 +133,6 @@ function MyPostComp({
       {isClicked && (
         <div className="absolute  bg-white shadow-md rounded-md">
           <Button buttonFor={"Update"} colour={"gray"} onClick={()=>{
-            setRefreshPage(!isRefresh)
             navigate(`/update/${id}`)
           }} />
           <Button buttonFor={"Delete"} colour={"red"} onClick={type === "video"? handleVideoDelete:handleImageDelete }/>

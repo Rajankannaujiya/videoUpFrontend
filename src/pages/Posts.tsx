@@ -24,13 +24,6 @@ export default function Posts() {
 
   const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
 
-if (refreshPage) {
-  // Refresh the page or re-render the component
-  window.location.reload();
-  // or
-  setRefreshPage(false); // reset the state
-}
-
 
 
   useEffect(()=>{
@@ -38,9 +31,14 @@ if (refreshPage) {
     if(state == "hasValue"){
       setPostList(contents)
     }
+    if (refreshPage) {
+      window.location.reload();
+      // Logic to re-render the component or refresh data
+      console.log("Refreshing...");
+      setRefreshPage(false); // Reset the state to avoid endless loop
+    }
 
-
-  },[state, contents])
+  },[state, contents,refreshPage,setRefreshPage])
 
   return (
     <div className="h-screen flex flex-col items-center  p-4 overflow-x-hidden overflow-y-scroll scrollbar-hide mt-12">

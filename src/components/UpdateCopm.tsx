@@ -98,7 +98,7 @@ const {id }= useParams();
         if (response.ok) {
             console.log('File uploaded successfully');
             <Alert textColor={"green"} alertType={"success"} alertContent={"post updated successfully"} />
-            setRefreshPage(!isRefresh)
+            setRefreshPage(true)
             navigate("/myPosts")
         } else {
             console.error('Upload failed');

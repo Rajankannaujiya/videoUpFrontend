@@ -17,28 +17,27 @@ function MyPosts() {
     updatedAt:string;
 }
 
-
+const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
   const [myPostList, setMyPostList] = useState<MyPost [] | []>([]);
 
   const { state, contents } = useRecoilValueLoadable(myPostSelector);
 
-
   useEffect(()=>{
     if (state === "hasValue") {
-      setMyPostList(contents);
+      console.log(contents)
+      setMyPostList(contents)
     }
 
-  }, [state, contents]);
+    if (refreshPage) {
+      window.location.reload();
+      // Logic to re-render the component or refresh data
+      console.log("Refreshing...");
+      setRefreshPage(false); // Reset the state to avoid endless loop
+    }
 
-  const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
+  }, [state, contents,refreshPage,setRefreshPage]);
 
-  if (refreshPage) {
-    // Refresh the page or re-render the component
-    window.location.reload();
-    console.log("I got refresh")
-    // or
-    setRefreshPage(false); // reset the state
-  }
+
   
 
   return (
@@ -60,7 +59,7 @@ function MyPosts() {
           </div>
         ))
       ) : (
-        <p className="flex justify-center items-center font-bold font-sarif">No videos available</p>
+       myPostList && <p className="flex justify-center items-center font-bold font-sarif">No videos available</p>
       )}
     </div>
     </div>

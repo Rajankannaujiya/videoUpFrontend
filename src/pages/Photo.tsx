@@ -24,12 +24,7 @@ function Photo() {
 
   const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
 
-if (refreshPage) {
-  // Refresh the page or re-render the component
-  window.location.reload();
-  // or
-  setRefreshPage(false); // reset the state
-}
+
 
 
   const [photoList, setPhotoList] = useState<PostProps[]>([]);
@@ -42,7 +37,14 @@ if (refreshPage) {
       setPhotoList(contents);
     }
 
-  }, [state, contents]);
+    if (refreshPage) {
+      // Refresh the page or re-render the component
+      window.location.reload();
+      // or
+      setRefreshPage(false); // reset the state
+    }
+
+  }, [state, contents,refreshPage,setRefreshPage]);
 
 
   return (

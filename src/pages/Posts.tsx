@@ -1,7 +1,9 @@
 import { Key, useEffect, useState } from "react";
 import PostComp from "../components/postComp";
 import { useRecoilState, useRecoilValueLoadable } from "recoil";
-import { isRefresh, postSelector } from "../state/userRecoil";
+import { isAuthenticated, isRefresh, postSelector } from "../state/userRecoil";
+import { useNavigate } from "react-router-dom";
+import Spinner from "../components/common/Spinner";
 
 
 interface PostProps{
@@ -18,11 +20,22 @@ interface PostProps{
 
 
 export default function Posts() {
+  const navigate = useNavigate();
 
   const [postList,setPostList] = useState<PostProps[]>([]);
   const { state, contents } = useRecoilValueLoadable(postSelector);
 
   const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
+
+  const checkIsAuthenticated = useRecoilValueLoadable(isAuthenticated);
+  
+  useEffect(() => {
+    // Handle authentication check
+    if (checkIsAuthenticated.state === 'hasValue' && !checkIsAuthenticated.contents) {
+        // User is not authenticated, redirect to home or login
+        navigate('/', { replace: true });
+    }
+}, [checkIsAuthenticated, navigate]);
 
 
 
@@ -38,7 +51,7 @@ export default function Posts() {
       setRefreshPage(false); // Reset the state to avoid endless loop
     }
 
-  },[state, contents,refreshPage,setRefreshPage])
+  },[state, contents,refreshPage,setRefreshPage ,])
 
   return (
     <div className="h-screen flex flex-col items-center  p-4 overflow-x-hidden overflow-y-scroll scrollbar-hide mt-12">
@@ -49,7 +62,10 @@ export default function Posts() {
        </div> :  <div key={indedx}>
        <PostComp  id={post.id} type={post.type} imageUrl={post.image_url} description={post.description} createdAt={post.createdAt} updatedAt={post.updatedAt} title={post.title} username={post.username}/>
        </div>
-      )):<p>No post found</p>}
+      )):  <div className="flex items-center justify-center min-h-screen">
+      <Spinner />
+  </div>
+    }
     
 
       </div>

@@ -1,10 +1,11 @@
 
 
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import FullPostComp from "../components/FullPostComp"
 import { useRecoilState, useRecoilValueLoadable } from "recoil";
-import { isRefresh, singleVideoSelector } from "../state/userRecoil";
+import { isAuthenticated, isRefresh, singleVideoSelector } from "../state/userRecoil";
 import { useEffect, useState } from "react";
+import Spinner from "../components/common/Spinner";
 
 
 
@@ -25,6 +26,19 @@ function FullPost() {
   const {id} = useParams();  
 
   const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
+
+
+  const navigate = useNavigate();
+  const checkIsAuthenticated = useRecoilValueLoadable(isAuthenticated);
+
+  useEffect(() => {
+    // Handle authentication check
+    if (checkIsAuthenticated.state === 'hasValue' && !checkIsAuthenticated.contents) {
+        // User is not authenticated, redirect to home or login
+        navigate('/', { replace: true });
+    }
+}, [checkIsAuthenticated, navigate]);
+
 
 if (refreshPage) {
   // Refresh the page or re-render the component
@@ -59,7 +73,9 @@ if (refreshPage) {
           </div>
         ))
       ) : (
-        <p className="flex justify-center items-center font-bold font-sarif">No videos available</p>
+        <div className="flex items-center justify-center min-h-screen">
+    <Spinner />
+</div>
       )}
       </div>
     </div>

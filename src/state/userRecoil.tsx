@@ -1,6 +1,7 @@
 import axios from "axios";
 import { atom, atomFamily, RecoilEnv, selector, selectorFamily } from "recoil";
 import { BACKEND_URL } from "../config";
+
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false 
 
 export const signupUser = atom({
@@ -362,3 +363,14 @@ export const isRefresh = atom({
 
 
 
+export const isAuthenticated = selector({
+    key: "checkUserTokenSelector",
+    get: ({ get }) => {
+        get(isSignin)
+        const token = localStorage.getItem("token");
+        if (!token || token === 'undefined') {
+            return false; // User is not authenticated
+        }
+        return true; // User is authenticated
+    },
+});

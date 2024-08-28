@@ -1,8 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FullPostComp from "../components/FullPostComp";
 import { useRecoilValueLoadable } from "recoil";
-import { singleImageSelector, singleVideoSelector } from "../state/userRecoil";
+import { isAuthenticated, singleImageSelector, singleVideoSelector } from "../state/userRecoil";
 import { useEffect, useState } from "react";
+import Spinner from "../components/common/Spinner";
 
 function FullPost() {
   interface FullPostCompProps {
@@ -30,6 +31,20 @@ function FullPost() {
   const videoLoadable = useRecoilValueLoadable(singleVideoSelector(id ?? ""));
   const { state: videoState, contents: videoContents } = videoLoadable;
 
+  const navigate = useNavigate();
+  const checkIsAuthenticated = useRecoilValueLoadable(isAuthenticated);
+
+  useEffect(() => {
+    // Handle authentication check
+    if (checkIsAuthenticated.state === 'hasValue' && !checkIsAuthenticated.contents) {
+        // User is not authenticated, redirect to home or login
+        navigate('/', { replace: true });
+    }
+}, [checkIsAuthenticated, navigate]);
+
+
+ 
+
   useEffect(() => {
     if (imageState === "hasValue") {
       console.log("Image content loaded", imageContents);
@@ -44,6 +59,7 @@ function FullPost() {
       setVideo(videoContents);
     }
   }, [videoState, videoContents]);
+
 
   return (
     <div className="min-h-screen w-full flex justify-center items-center">
@@ -75,9 +91,9 @@ function FullPost() {
             </div>
           ))
         ) : (
-          <p className="flex justify-center items-center font-bold font-sarif">
-            No posts available
-          </p>
+          <div className="flex items-center justify-center min-h-screen">
+          <Spinner />
+      </div>
         )}
       </div>
     </div>

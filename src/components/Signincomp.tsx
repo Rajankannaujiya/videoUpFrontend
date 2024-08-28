@@ -30,6 +30,13 @@ function Signincomp() {
     console.log("this is data", response.data);
 
     // Store the token in localStorage
+    if(!response.data.token){
+
+      <Alert textColor="text-red-800" alertType="Danger Alert!" alertContent="you are not logged in"/>
+  
+        return;
+    }
+    localStorage.clear();
     localStorage.setItem("token", response.data.token);
     setSignInStatus(true)
     // Navigate to the "/posts" route

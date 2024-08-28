@@ -78,7 +78,6 @@ function Navbar() {
                 </ul>
 
               {/* importing the logout component her */}
-
                 <div>
                   <Logout />
                 </div>

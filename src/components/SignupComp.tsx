@@ -41,7 +41,13 @@ function SignupComp() {
         }
       })
 
-      console.log("data is",response.data);
+      if(!response.data.token){
+
+        <Alert textColor="text-red-800" alertType="Danger Alert!" alertContent="you are not logged in"/>
+    
+          return;
+      }
+      localStorage.clear();
       localStorage.setItem("token",response.data.token)
       setSignInStatus(true)
       navigate("/posts")

@@ -1,8 +1,10 @@
 
 import {  useRecoilState, useRecoilValueLoadable } from "recoil"
 import MyPostComp from "../components/MyPostComp"
-import { isRefresh, myPostSelector } from "../state/userRecoil"
+import { isAuthenticated, isRefresh, myPostSelector } from "../state/userRecoil"
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Spinner from "../components/common/Spinner";
 
 function MyPosts() {
 
@@ -21,6 +23,20 @@ const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
   const [myPostList, setMyPostList] = useState<MyPost [] | []>([]);
 
   const { state, contents } = useRecoilValueLoadable(myPostSelector);
+
+
+  const navigate = useNavigate();
+  const checkIsAuthenticated = useRecoilValueLoadable(isAuthenticated);
+
+  useEffect(() => {
+    // Handle authentication check
+    if (checkIsAuthenticated.state === 'hasValue' && !checkIsAuthenticated.contents) {
+        // User is not authenticated, redirect to home or login
+        navigate('/', { replace: true });
+    }
+}, [checkIsAuthenticated, navigate]);
+
+
 
   useEffect(()=>{
     if (state === "hasValue") {
@@ -59,7 +75,9 @@ const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
           </div>
         ))
       ) : (
-       myPostList && <p className="flex justify-center items-center font-bold font-sarif">No videos available</p>
+        <div className="flex items-center justify-center min-h-screen">
+        <Spinner />
+    </div>
       )}
     </div>
     </div>

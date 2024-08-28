@@ -1,3 +1,4 @@
+
 import Avatar from "./common/Avatar";
 
 
@@ -14,6 +15,7 @@ interface FullPostCompProps{
   username:string
 }
 function FullPostComp({video_url,title,description,image_url,username,publishedDate,updatedDate}:FullPostCompProps) {
+
   return (
  
          <div className="p-4 border-b  pb-4 w-ful object-cover mt-16 cursor-pointer">

@@ -1,8 +1,10 @@
 import { useRecoilState, useRecoilValueLoadable} from "recoil";
 import PostComp from "../components/postComp";
 import { useEffect, useState } from "react";
-import { isRefresh, videosSelector } from "../state/userRecoil";
+import { isAuthenticated, isRefresh, videosSelector } from "../state/userRecoil";
 import { Key } from "react";
+import { useNavigate } from "react-router-dom";
+import Spinner from "../components/common/Spinner";
 
 
 
@@ -22,6 +24,19 @@ function Videos() {
   const { state, contents } = useRecoilValueLoadable(videosSelector);
 
   const [refreshPage, setRefreshPage] = useRecoilState(isRefresh);
+
+
+  const navigate = useNavigate();
+  const checkIsAuthenticated = useRecoilValueLoadable(isAuthenticated);
+
+  useEffect(() => {
+    // Handle authentication check
+    if (checkIsAuthenticated.state === 'hasValue' && !checkIsAuthenticated.contents) {
+        // User is not authenticated, redirect to home or login
+        navigate('/', { replace: true });
+    }
+}, [checkIsAuthenticated, navigate]);
+
 
  
   useEffect(() => {
@@ -57,7 +72,9 @@ function Videos() {
           </div>
         ))
       ) : (
-        <p className="flex justify-center items-center font-bold font-sarif">No videos available</p>
+        <div className="flex items-center justify-center min-h-screen">
+    <Spinner />
+</div>
       )}
     </div>
   );

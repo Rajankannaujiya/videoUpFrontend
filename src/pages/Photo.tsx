@@ -1,9 +1,11 @@
 // import PostComp from "../components/postComp"
 
 import { useRecoilState, useRecoilValueLoadable } from "recoil";
-import { isRefresh, photoSelector } from "../state/userRecoil";
+import { isAuthenticated, isRefresh, photoSelector } from "../state/userRecoil";
 import { Key, useEffect, useState } from "react";
 import PostComp from "../components/postComp";
+import { useNavigate } from "react-router-dom";
+import Spinner from "../components/common/Spinner";
 
 
 
@@ -30,6 +32,20 @@ function Photo() {
   const [photoList, setPhotoList] = useState<PostProps[]>([]);
 
   const { state, contents } = useRecoilValueLoadable(photoSelector);
+
+
+
+  const navigate = useNavigate();
+  const checkIsAuthenticated = useRecoilValueLoadable(isAuthenticated);
+
+  useEffect(() => {
+    // Handle authentication check
+    if (checkIsAuthenticated.state === 'hasValue' && !checkIsAuthenticated.contents) {
+        // User is not authenticated, redirect to home or login
+        navigate('/', { replace: true });
+    }
+}, [checkIsAuthenticated, navigate]);
+
 
   useEffect(() => {
     
@@ -67,7 +83,9 @@ function Photo() {
           </div>
         ))
       ) : (
-        <p className="flex justify-center items-center font-bold font-sarif">No videos available</p>
+        <div className="flex items-center justify-center min-h-screen">
+    <Spinner />
+</div>
       )}
 
    </div>

@@ -1,13 +1,13 @@
 import { useState } from "react"
 import Links from "./common/Links"
 import { useRecoilValue } from "recoil";
-import { isSignin } from "../state/userRecoil";
+import { isAuthenticated } from "../state/userRecoil";
 import Logout from "./Logout";
 
 
 function Navbar() {
 
-  const isLoggedIn = useRecoilValue(isSignin)
+  const isLoggedIn = useRecoilValue(isAuthenticated)
 
   const[isClicked, setIsClicked]= useState(false);
 
@@ -27,35 +27,35 @@ function Navbar() {
         <div className="hidden w-full md:block md:w-auto">
           <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white">
 
-           { !isLoggedIn &&
-          <li>
-            <Links linkto="/" linkfor="SignUp"/>
-          </li>
-          }
-         {isLoggedIn &&  <li>
-            <Links linkto="/posts" linkfor="Posts"/>
-          </li>}
+          {!isLoggedIn && (
+            <>
+                    <li>
+                        <Links linkto="/" linkfor="SignUp" />
+                    </li>
 
-          {isLoggedIn && <li>
-            <Links linkto="/videos" linkfor="Videos"/>
-          </li>}
+                  <li>
+                  <Links linkto="/login" linkfor="Login" />
+                  </li>
+                  </>
 
-         {isLoggedIn &&  <li>
-            <Links linkto="/photos" linkfor="Photos"/>
-          </li>}
-
-          {!isLoggedIn && 
-          <li>
-          
-          <Links linkto="/login" linkfor="Login"/>
-          </li>
-          }
-
-
-          {isLoggedIn && <li>
-            <Links linkto="/upload" linkfor="Upload"/>
-          </li>
-}
+                )}
+                {isLoggedIn && (
+                    <>
+                        <li>
+                            <Links linkto="/posts" linkfor="Posts" />
+                        </li>
+                        <li>
+                            <Links linkto="/videos" linkfor="Videos" />
+                        </li>
+                        <li>
+                            <Links linkto="/photos" linkfor="Photos" />
+                        </li>
+                        <li>
+                            <Links linkto="/upload" linkfor="Upload" />
+                        </li>
+                    </>
+                )}
+             
 
 {isLoggedIn &&
           <button 
@@ -76,6 +76,9 @@ function Navbar() {
                   <Links linkto="/myPosts" linkfor="myposts"/>
                  </li>
                 </ul>
+
+              {/* importing the logout component her */}
+
                 <div>
                   <Logout />
                 </div>

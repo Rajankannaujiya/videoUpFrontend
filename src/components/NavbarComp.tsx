@@ -76,6 +76,9 @@ function Navbar() {
                   <Links linkto="/myPosts" linkfor="myposts"/>
                  </li>
                 </ul>
+
+
+                {/* importing the logout component her */}
                 <div>
                   <Logout />
                 </div>
